@@ -1,0 +1,53 @@
+/.gigacode
+
+# Ignore build outputs
+**/bin/
+**/obj/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider/IDE files
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# NuGet
+*.nupkg
+.nuget/
+packages/
+
+# Publish output
+**/publish/
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Test results
+TestResults/
+
+# Compiled binaries
+*.dll
+*.exe
+*.pdb
+*.cache
+
+# Other
+*.vsix
+
+# Keep local secrets out
+secrets.json
+appsettings.Development.json
