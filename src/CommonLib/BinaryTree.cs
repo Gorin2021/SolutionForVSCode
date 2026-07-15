@@ -1,79 +1,89 @@
-using System.Collections;
+using System;
+using System.Collections.Generic;
 
-public class Node
+public sealed class BinarySearchTree<T>
 {
-    public int Value { get; set; }
-    public Node? Left { get; set; }
-    public Node? Right { get; set; }
-
-    public Node(int value)
+    private sealed class Node
     {
-        Value = value;
-        Left = null;
-        Right = null;
-    }
-}
+        public T Value;
+        public Node? Left;
+        public Node? Right;
+        public Node? Parent;
 
-public class BinaryTree : IEnumerable<int>
-{
-    private Node? root;
+        public int Height;
+        public int DuplicateCount;
 
-    public void Insert(int value)
-    {
-        if (root == null)
+        public Node(T value, Node? parent)
         {
-            root = new Node(value);
-        }
-        else
-        {
-            InsertRecursively(root, value);
+            Value = value;
+            Parent = parent;
+
+            Left = null;
+            Right = null;
+
+            Height = 1;
+            DuplicateCount = 1;
         }
     }
 
-    private void InsertRecursively(Node node, int value)
+    private Node? _root;
+    private int _count;
+    private readonly IComparer<T> _comparer;
+
+    public BinarySearchTree(IComparer<T>? comparer = null)
     {
-        if (value < node.Value)
+        _root = null;
+        _count = 0;
+        _comparer = comparer ?? Comparer<T>.Default;
+    }
+
+    public int Count => _count;
+
+    public bool Add(T value)
+    {
+        if (_root is null)
         {
-            if (node.Left == null)
+            _root = new Node(value, null);
+            _count++;
+            return true;
+        }
+
+        Node? current = _root;
+        Node? parent = null;
+
+        while (true)
+        {
+            parent = current;
+
+            int comparison = _comparer.Compare(value, current.Value);
+
+            if (comparison < 0)
             {
-                node.Left = new Node(value);
+                current = current.Left;
+            }
+            else if (comparison > 0)
+            {
+                current = current.Right;
             }
             else
             {
-                InsertRecursively(node.Left, value);
+                current.DuplicateCount++;
+                _count++;
+                return false;
             }
-        }
-        else
-        {
-            if (node.Right == null)
+
+            //Дошли до конца дерева, вставляем новый узел
+            Node newNode = new Node(value, parent);
+
+            if (_comparer.Compare(value, parent.Value) < 0)
             {
-                node.Right = new Node(value);
+                parent.Left = newNode;
             }
             else
             {
-                InsertRecursively(node.Right, value);
+                parent.Right = newNode;
             }
+            return true;
         }
     }
-
-    public IEnumerator<int> GetEnumerator()
-    {
-        return InOrder(root).GetEnumerator();
-    }
-
-    private IEnumerable<int> InOrder(Node? node)
-    {
-        if (node == null)
-            yield break;
-
-        foreach (var v in InOrder(node.Left))
-            yield return v;
-
-        yield return node.Value;
-
-        foreach (var v in InOrder(node.Right))
-            yield return v;
-    }
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
