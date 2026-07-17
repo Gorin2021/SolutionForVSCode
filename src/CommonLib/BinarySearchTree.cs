@@ -40,15 +40,16 @@ public sealed class BinarySearchTree<T>
     {
         if (_root is null)
         {
-            _root = new Node(value, null);
+            _root = new Node(value, parent: null);
             _count++;
+
             return true;
         }
 
         Node? current = _root;
         Node? parent = null;
 
-        while (true)
+        while (current is not null)
         {
             parent = current;
 
@@ -66,21 +67,85 @@ public sealed class BinarySearchTree<T>
             {
                 current.DuplicateCount++;
                 _count++;
+
                 return false;
             }
+        }
 
-            //Дошли до конца дерева, вставляем новый узел
-            Node newNode = new Node(value, parent);
+        //Дошли до конца дерева, вставляем новый узел
+        Node newNode = new Node(value, parent);
 
-            if (_comparer.Compare(value, parent.Value) < 0)
+        if (_comparer.Compare(value, parent!.Value) < 0)
+        {
+            parent.Left = newNode;
+        }
+        else
+        {
+            parent.Right = newNode;
+        }
+
+        _count++;
+
+        return true;
+    }
+
+    public bool Contains(T value)
+    {
+        return FindNode(value) is not null;
+    }
+
+    private Node? FindNode(T value)
+    {
+        Node? current = _root;
+
+        while (current is not null)
+        {
+            int comparison = _comparer.Compare(value, current.Value);
+
+            if (comparison < 0)
             {
-                parent.Left = newNode;
+                current = current.Left;
+            }
+            else if (comparison > 0)
+            {
+                current = current.Right;
             }
             else
             {
-                parent.Right = newNode;
+                return current;
             }
-            return true;
+        }
+
+        return null;
+    }
+
+    public IEnumerable<T> InOrderTraversal()
+    {
+        if (_root is null)
+        {
+            yield break;
+        }
+
+        Stack<Node> stack = new();
+
+        Node? current = _root;
+
+        while (current is not null || stack.Count > 0)
+        {
+            while (current is not null)
+            {
+                stack.Push(current);
+                current = current.Left;
+            }
+
+            current = stack.Pop();
+
+            for (int i = 0; i < current.DuplicateCount; i++)
+            {
+                yield return current.Value;
+            }
+
+            current = current.Right;
         }
     }
 }
