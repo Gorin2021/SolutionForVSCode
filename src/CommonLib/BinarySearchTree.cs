@@ -27,6 +27,10 @@ public sealed class BinarySearchTree<T>
     private int _count;
     private readonly IComparer<T> _comparer;
 
+    /// <summary>
+    /// Инициализирует новое дерево поиска с необязательным пользовательским компаратором.
+    /// </summary>
+    /// <param name="comparer">Компаратор для сравнения значений элементов.</param>
     public BinarySearchTree(IComparer<T>? comparer = null)
     {
         _root = null;
@@ -34,8 +38,16 @@ public sealed class BinarySearchTree<T>
         _comparer = comparer ?? Comparer<T>.Default;
     }
 
+    /// <summary>
+    /// Возвращает количество элементов в дереве.
+    /// </summary>
     public int Count => _count;
 
+    /// <summary>
+    /// Добавляет элемент в дерево поиска.
+    /// </summary>
+    /// <param name="value">Добавляемое значение.</param>
+    /// <returns>True, если элемент был добавлен как новый; false, если это был дубликат.</returns>
     public bool Add(T value)
     {
         if (_root is null)
@@ -89,6 +101,11 @@ public sealed class BinarySearchTree<T>
         return true;
     }
 
+    /// <summary>
+    /// Проверяет, содержится ли указанное значение в дереве.
+    /// </summary>
+    /// <param name="value">Значение для поиска.</param>
+    /// <returns>True, если значение найдено; иначе false.</returns>
     public bool Contains(T value)
     {
         return FindNode(value) is not null;
@@ -119,6 +136,10 @@ public sealed class BinarySearchTree<T>
         return null;
     }
 
+    /// <summary>
+    /// Возвращает элементы дерева в порядке симметричного обхода.
+    /// </summary>
+    /// <returns>Последовательность элементов в отсортированном порядке.</returns>
     public IEnumerable<T> InOrderTraversal()
     {
         if (_root is null)
