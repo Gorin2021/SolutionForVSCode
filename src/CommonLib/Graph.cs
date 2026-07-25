@@ -2,7 +2,7 @@ using System.Text;
 
 public class Graph<T> where T : notnull
 {
-    private readonly Dictionary<T, HashSet<T>> _graph = new();
+    private readonly Dictionary<T, HashSet<T>> _graph;
     private readonly bool _directed;
     private int _edgeCount;
 
@@ -12,6 +12,7 @@ public class Graph<T> where T : notnull
     {
         _directed = directed;
         _comparer = comparer ?? EqualityComparer<T>.Default;
+        _graph = new Dictionary<T, HashSet<T>>(_comparer);
     }
 
     /// <summary>
@@ -67,7 +68,7 @@ public class Graph<T> where T : notnull
     {
         ArgumentNullException.ThrowIfNull(vertex);
 
-        return _graph.TryAdd(vertex, new());
+        return _graph.TryAdd(vertex, new HashSet<T>(_comparer));
     }
 
     /// <summary>
@@ -161,7 +162,7 @@ public class Graph<T> where T : notnull
 
         if (_graph.TryGetValue(vertex, out var edges))
         {
-            return edges.ToArray();
+            return edges;
         }
 
         return Array.Empty<T>();
