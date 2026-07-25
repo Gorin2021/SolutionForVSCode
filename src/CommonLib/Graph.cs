@@ -6,8 +6,13 @@ public class Graph<T> where T : notnull
     private readonly bool _directed;
     private int _edgeCount;
 
-    public Graph(bool directed = false) =>
-    _directed = directed;
+    private readonly IEqualityComparer<T> _comparer;
+
+    public Graph(bool directed = false, IEqualityComparer<T>? comparer = null)
+    {
+        _directed = directed;
+        _comparer = comparer ?? EqualityComparer<T>.Default;
+    }
 
     /// <summary>
     /// Получает количество вершин в графе.
@@ -73,10 +78,12 @@ public class Graph<T> where T : notnull
     /// <param name="src">Источник ребра</param>
     /// <param name="dest">Назначение ребра</param>
     /// <exception cref="ArgumentNullException">Выбрасывается, если src или dest равны null.</exception>
+    /// <exception cref="ArgumentException">Выбрасывается, если src или dest равны (петля).</exception>
 	public bool TryAddEdge(T src, T dest)
     {
         ArgumentNullException.ThrowIfNull(src);
         ArgumentNullException.ThrowIfNull(dest);
+        if (_comparer.Equals(src, dest)) throw new ArgumentException("src и dst должны быть разными");
 
         TryAddVertex(src);
         TryAddVertex(dest);

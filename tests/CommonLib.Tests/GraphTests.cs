@@ -23,7 +23,7 @@ public class GraphTests
     /// Проверяет, что свойство EdgeCount возвращает общее количество рёбер в неориентированном графе.
     /// </summary>
     [TestMethod]
-    public void EdgeCount_ShouldReturnTotalNumberOfEdges_OnNotDirectGraf()
+    public void EdgeCount_ShouldReturnTotalNumberOfEdges_OnUnDirectedGraf()
     {
         // Arrange
         var graph = new Graph<int>();
@@ -38,7 +38,7 @@ public class GraphTests
     /// Проверяет, что свойство EdgeCount возвращает общее количество рёбер в неориентированном графе.
     /// </summary>
     [TestMethod]
-    public void EdgeCount_ShouldReturnTotalNumberOfEdges_OnDirerctGraf()
+    public void EdgeCount_ShouldReturnTotalNumberOfEdges_OnDirerctedGraf()
     {
         // Arrange
         var graph = new Graph<int>(true);
@@ -69,35 +69,17 @@ public class GraphTests
     }
 
 /// <summary>
-/// При удалении ребра счетчик корректно уменьшается
-/// граф ориентированный
+/// При удалении вершины, удаляются ее ребра, счетчик корректно уменьшается.
+/// проверяет как ориентированный, так и не ориентированный граф 
 /// </summary>
     [TestMethod]
-    public void EdgeCount_ShouldReturnTotalEdges_WhenVertexRemoved_DirectGraf()
+    [DataRow(true)]
+    [DataRow(false)]
+    public void EdgeCount_ShouldReturnTotalEdges_WhenVertexRemoved(bool isDirected)
     {
+
          // Arrange
-        var graph = new Graph<int>(true);
-
-        graph.TryAddEdge(1, 2);
-        graph.TryAddEdge(2, 3);
-        
-        bool isRemoved = graph.TryRemoveVertex(2);
-
-        //Assert
-         Assert.IsTrue(isRemoved);
-         Assert.AreEqual(0, graph.EdgeCount);
-
-    }
-
-/// <summary>
-/// При удалении ребра счетчик корректно уменьшается
-/// граф не ориентированный
-/// </summary>
-    [TestMethod]
-    public void EdgeCount_ShouldReturnTotalEdges_WhenVertexRemoved()
-    {
-         // Arrange
-        var graph = new Graph<int>();
+        var graph = new Graph<int>(isDirected);
 
         graph.TryAddEdge(1, 2);
         graph.TryAddEdge(2, 3);
