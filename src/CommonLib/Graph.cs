@@ -110,16 +110,29 @@ public class Graph<T> where T : notnull
     {
         ArgumentNullException.ThrowIfNull(vertex);
 
-        if (_graph.TryGetValue(vertex, out var toNeighbours))
-        {
-            _edgeCount -= toNeighbours.Count;
-        }
+        if (!_graph.TryGetValue(vertex, out var toNeighbours))
+            return false;
 
-        foreach (var neighbours in _graph.Values)
+        if (!_directed)
         {
-            if (neighbours.Remove(vertex))
-                if (_directed) _edgeCount--;
+            foreach (var neighbour in toNeighbours)
+            {
+                // Для не ориентированного графа удаляем обратные ребра
+                // без изменения их количества
+                _graph[neighbour].Remove(vertex);
+            }
         }
+        else
+        {
+            foreach (var neighbours in _graph.Values)
+            {
+                if (neighbours.Remove(vertex))
+                    _edgeCount--;
+            }
+        }
+        
+        _edgeCount -= toNeighbours.Count;
+
         // Удаляем саму вершину
         return _graph.Remove(vertex);
     }
