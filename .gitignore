@@ -3,6 +3,7 @@
 # Ignore build outputs
 **/bin/
 **/obj/
+**/BenchmarkDotNet.Artifacts/
 
 # Visual Studio files
 .vs/

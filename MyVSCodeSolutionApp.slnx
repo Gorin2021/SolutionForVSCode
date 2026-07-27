@@ -5,4 +5,7 @@
   <Folder Name="/tests/">
     <Project Path="tests/CommonLib.Tests/CommonLib.Tests.csproj" />
   </Folder>
+   <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/Benchmarks.csproj" />
+  </Folder>
 </Solution>
