@@ -1,14 +1,14 @@
 using BenchmarkDotNet.Attributes;
 
 [MemoryDiagnoser]
-public class EdgeBenchmark
+public class EdgeWithWeightBenchmark
 {
-    private GraphWithWeight<int> _graph = null!;
+    private Graph<int> _graph = null!;
 
     [GlobalSetup]
     public void Setup()
     {
-        _graph = new GraphWithWeight<int>();
+        _graph = new Graph<int>();
 
         for (int i = 0; i < 1_000_001; i++)
             _graph.TryAddVertex(i);
