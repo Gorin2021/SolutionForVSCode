@@ -3,12 +3,13 @@ using BenchmarkDotNet.Attributes;
 [MemoryDiagnoser]
 public class EdgeWithWeightBenchmark
 {
-    private Graph<int> _graph = null!;
+   
+    private GraphWithWeight<int> _graph = null!;
 
     [GlobalSetup]
     public void Setup()
     {
-        _graph = new Graph<int>();
+        _graph = new GraphWithWeight<int>();
 
         for (int i = 0; i < 1_000_001; i++)
             _graph.TryAddVertex(i);
@@ -32,5 +33,10 @@ public class EdgeWithWeightBenchmark
     public bool ContainsEdge()
     {
         return _graph.ContainsEdge(500000, 500001);
+    }
+        [Benchmark]
+    public bool ContainsVertex()
+    {
+        return _graph.ContainsVertex(10_000_002);
     }
 }

@@ -33,6 +33,10 @@ internal static class Program
         BenchmarkRunner.Run<AddVertexWithWeightBenchmarks>();
         BenchmarkRunner.Run<EdgeWithWeightBenchmark>();
 
+        BenchmarkRunner.Run<AddVertexWithListOfWeightBenchmarks>();
+        BenchmarkRunner.Run<EdgeWithListOfWeightBenchmark>();
+
+
     }
 }
 
