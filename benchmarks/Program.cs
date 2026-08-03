@@ -23,6 +23,7 @@ internal static class Program
     private static void PrintSeparator()
     {
         Console.WriteLine(new string('-', 30));
+        (double X, double Y)[] coords = new (double X, double Y)[1];
     }
 
     private static void RunBenchmarks()

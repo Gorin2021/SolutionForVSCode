@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 
-// Copied from src/ConsoleApp1/DoubleLinkedList.cs
 public sealed class DoubleLinkedList<T> : IEnumerable<T>
 {
     private Node? _head;
