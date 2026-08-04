@@ -11,7 +11,7 @@ public class PathOnGraphTests
         var path = new PathOnGraph<int>();
 
         // Action
-        path.AddStartVertex(1);
+        path.AddStartPathEdge(1);
 
         // Assert
         Assert.AreEqual(1, path.Count);
@@ -25,7 +25,7 @@ public class PathOnGraphTests
     {
         // Arrange
         var path = new PathOnGraph<int>();
-        path.AddStartVertex(1);
+        path.AddStartPathEdge(1);
 
         // Action
         path.Add(new Edge<int>(2, 5.5));
@@ -43,7 +43,7 @@ public class PathOnGraphTests
     {
         // Arrange
         var path = new PathOnGraph<int>();
-        path.AddStartVertex(1);
+        path.AddStartPathEdge(1);
         path.Add(new Edge<int>(2, 3.0));
 
         // Action
@@ -63,7 +63,7 @@ public class PathOnGraphTests
     {
         // Arrange
         var path = new PathOnGraph<int>();
-        path.AddStartVertex(1);
+        path.AddStartPathEdge(1);
         path.Add(new Edge<int>(2, 2.0));
         path.Add(new Edge<int>(3, 4.0));
 
@@ -82,7 +82,7 @@ public class PathOnGraphTests
     {
         // Arrange
         var path = new PathOnGraph<string>();
-        path.AddStartVertex("A");
+        path.AddStartPathEdge("A");
         path.Add(new Edge<string>("B", 1.5));
         path.Add(new Edge<string>("C", 2.5));
 
@@ -101,7 +101,7 @@ public class PathOnGraphTests
     {
         // Arrange
         var path = new PathOnGraph<string>();
-        path.AddStartVertex("A");
+        path.AddStartPathEdge("A");
         path.Add(new Edge<string>("B", 1.5));
 
         // Action

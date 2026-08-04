@@ -33,7 +33,7 @@ public class PathGenerator<T> where T : notnull
         StartVertex = startVertex;
         EndVertex = endVertex;
 
-        _paths.AddStartVertex(StartVertex);
+        _paths.AddStartPathEdge(StartVertex);
 
         GenerateOptimalPath(StartVertex);
 

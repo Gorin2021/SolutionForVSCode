@@ -42,11 +42,11 @@ public class PathOnGraph<T> where T : notnull
     public int Count => _paths.Count;
 
     /// <summary>
-    ///Добавляет начальную вершину в путь, так как путь начинается с этой вершины сбрасываем вес на 0.
+    ///Добавляет начальное ребро в путь, так как путь начинается с этой вершины сбрасываем вес на 0.
     /// </summary>
     /// <param name="vertex">Начальная вершина</param>
     /// <exception cref="ArgumentNullException"></exception>
-    public void AddStartVertex(T vertex)
+    public void AddStartPathEdge(T vertex)
     {
         if (vertex is null)
             ArgumentNullException.ThrowIfNull(vertex);
