@@ -2,50 +2,73 @@ using System.Diagnostics;
 
 public class PathGenerator<T> where T : notnull
 {
-    public T StartVertex { get; init; }
-    public T EndVertex { get; init; }
+    public T StartVertex { get; private set; }
+    public T EndVertex { get; private set; }
     public GraphWithListOfWeight<T> Graph { get; init; }
-    private Paths<T> _paths = new Paths<T>();
+    private PathOnGraph<T> _paths = new PathOnGraph<T>();
 
-    public Paths<T>? GeneratedPath { get; private set; }
+    public PathOnGraph<T>? GeneratedPath { get; private set; }
     private IEqualityComparer<T> Comparer { get; }
 
-    public PathGenerator(T startVertex, T endVertex,
-     GraphWithListOfWeight<T> graph, IEqualityComparer<T>? comparer = null)
+    public PathGenerator(GraphWithListOfWeight<T> graph, IEqualityComparer<T>? comparer = null)
     {
-        ArgumentNullException.ThrowIfNull(endVertex);
         ArgumentNullException.ThrowIfNull(graph);
+
+        Graph = graph;
+
+        Comparer = comparer ?? EqualityComparer<T>.Default;
+
+        // Убираем предупреждение о том что StartVertex и EndVertex не инициализированы,
+        // так как они будут инициализированы в методе GeneratePaths.
+        StartVertex = default!;
+        EndVertex = default!;
+    }
+
+    public void GeneratePaths(T startVertex, T endVertex)
+    {
+        ValidateStartAndEndVertexes(startVertex);
+        ValidateStartAndEndVertexes(endVertex);
+
+
         StartVertex = startVertex;
         EndVertex = endVertex;
-        Comparer = comparer ?? EqualityComparer<T>.Default;
-        Graph = graph;
+
+        _paths.AddStartVertex(StartVertex);
+
+        GenerateOptimalPath(StartVertex);
+
+        Debug.WriteLine($"Результат - путь с количеством вершин: {GeneratedPath?.Count ?? 0},  с весом: {GeneratedPath?.Last.PathWeight ?? 0}");
     }
 
-    public void GeneratePaths()
+    /// <summary>
+    /// Проверяет входящие значения вершин на null, а также проверяет существуют ли вершина в графе и содержат ли она ребра (только при не ориентированом графе).
+    /// </summary>
+    /// <param name="vertex">Проверяемая вершина</param>
+    /// <exception cref="ArgumentNullException">Выбрасывается если vertex равно null
+    /// <exception cref="ArgumentException">Выбрасывается если vertex:
+    ///  не существует в графе или не содержит ребер (только при не ориентированом графе).</exception>
+    private void ValidateStartAndEndVertexes(T vertex)
     {
-        //Добавляем начальную вершину в путь с весом 0, так как путь начинается с этой вершины.
-        _paths.Add(new Edge<T>(StartVertex, 0));
-        GeneratePath(StartVertex);
-        Debug.WriteLine($"Результат - путь с количеством вершин: { GeneratedPath?.Count ?? 0},  с весом: {GeneratedPath?.Last.PathWeight ?? 0}");
+        ArgumentNullException.ThrowIfNull(vertex);
+
+        if (!Graph.ContainsVertex(vertex!))
+            throw new ArgumentException($"Граф не содержит вершину {vertex}");
+
+        if (!Graph.IsDirected)
+        {
+            if (!Graph.GetAdjacentVertices(vertex).Any())
+                throw new ArgumentException($"Начальная вершина не содержет ребер {vertex}");
+        }
     }
 
-    private void GeneratePath(T vertex, T? prefVertex = default)
+    private void GenerateOptimalPath(T vertex, T? prefVertex = default)
     {
         foreach (var edge in Graph.GetAdjacentVertices(vertex))
         {
             double pathWeight = _paths.Last.PathWeight + edge.Weight;
 
-            if (Comparer.Equals(edge.Target, StartVertex)
-            || Comparer.Equals(edge.Target, prefVertex)
-            || GeneratedPath is not null && pathWeight >= GeneratedPath.Last.PathWeight)
+            if (!IsWeightMoreThanExisting(prefVertex, edge, pathWeight))
                 continue;
-
-            if (_paths.TryGetPathEdge(edge.Target, out var existingPathEdge))
-            {
-                if (existingPathEdge.PathWeight > 0 
-                && existingPathEdge.PathWeight <= pathWeight)
-                    continue;
-            }
 
             if (Comparer.Equals(edge.Target, EndVertex))
             {
@@ -56,14 +79,33 @@ public class PathGenerator<T> where T : notnull
 
                 GeneratedPath.Add(edge);
 
-                Debug.WriteLine($"Найден путь с количеством вершин: { GeneratedPath.Count},  с весом: {GeneratedPath.Last.PathWeight}");
-                
+                Debug.WriteLine($"Найден путь с количеством вершин: {GeneratedPath.Count},  с весом: {GeneratedPath.Last.PathWeight}");
+
                 continue;
             }
 
             _paths.Add(edge);
 
-            GeneratePath(edge.Target, vertex);
+            GenerateOptimalPath(edge.Target, vertex);
         }
+    }
+    /// <summary>
+    /// Возвращает false если у ребра Target == StartVertex или Target == prefVertex,
+    /// или если вес пути к искомой вершине меньше или равен весу уже существующего пути к этой вершине,
+    /// если такой путь уже существует. 
+    /// </summary>
+    private bool IsWeightMoreThanExisting(T? prefVertex, Edge<T> edge, double pathWeight)
+    {
+        if (Comparer.Equals(edge.Target, StartVertex)
+        || Comparer.Equals(edge.Target, prefVertex)
+        || GeneratedPath is not null && pathWeight >= GeneratedPath.Last.PathWeight
+        || _paths.TryGetPathEdge(edge.Target, out var path)
+        && path.PathWeight > 0d // если вес уже существующего пути к этой вершине больше 0, 
+        && path.PathWeight <= pathWeight) //то проверяем вес нового пути
+        {
+            return false;
+        }
+
+        return true;
     }
 }

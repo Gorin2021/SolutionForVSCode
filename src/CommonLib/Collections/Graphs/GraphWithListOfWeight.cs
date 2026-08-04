@@ -31,6 +31,10 @@ public class GraphWithListOfWeight<T> where T : notnull
         }
 
         /// <summary>
+        /// Проверяет какой граф: true - ориентированный, false - не ориентированный.
+        /// </summary>
+        public bool IsDirected => _directed;
+        /// <summary>
         /// Получает количество вершин в графе.
         /// </summary>
         public int VertexCount => _graph.Count;

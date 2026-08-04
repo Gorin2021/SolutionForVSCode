@@ -6,10 +6,10 @@ public class PathGeneratorTests
     public void GeneratePathShouldPathWithValidWeight(GraphWithListOfWeight<int> graph)
     {
         //Arrange
-        var pathGenerator = new PathGenerator<int>(startVertex: 1, endVertex: 10, graph: graph);
+        var pathGenerator = new PathGenerator<int>(graph: graph);
 
         //Action
-        pathGenerator.GeneratePaths();
+        pathGenerator.GeneratePaths(startVertex: 1, endVertex: 10);
 
         //Assert
         Assert.AreEqual(23, pathGenerator.GeneratedPath?.Last.PathWeight);
@@ -20,10 +20,10 @@ public class PathGeneratorTests
     public void GeneratePathShouldEndVertexesValid(GraphWithListOfWeight<int> graph)
     {
         //Arrange
-        var pathGenerator = new PathGenerator<int>(startVertex: 1, endVertex: 10, graph: graph);
+        var pathGenerator = new PathGenerator<int>(graph: graph);
 
         //Action
-        pathGenerator.GeneratePaths();
+        pathGenerator.GeneratePaths(startVertex: 1, endVertex: 10);
 
         //Assert
         Assert.AreEqual(10, pathGenerator.GeneratedPath?.Last.Target);
@@ -34,7 +34,7 @@ public class PathGeneratorTests
     {
         var graphWithListOfWeight = new GraphWithListOfWeight<int>();
         graphWithListOfWeight.TryAddEdge(src: 1, dest: 2, weight: 7); // 1 -> 2 (weight: 0 + 7 = 7)
-        graphWithListOfWeight.TryAddEdge(src: 1, dest: 5, weight: 1); 
+        graphWithListOfWeight.TryAddEdge(src: 1, dest: 5, weight: 1);
         graphWithListOfWeight.TryAddEdge(src: 1, dest: 3, weight: 4);
         graphWithListOfWeight.TryAddEdge(src: 2, dest: 5, weight: 4); // 2 -> 5 (weight: 7+4 = 11)
         graphWithListOfWeight.TryAddEdge(src: 2, dest: 4, weight: 1);
