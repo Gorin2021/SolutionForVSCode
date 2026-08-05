@@ -4,13 +4,32 @@ internal static class Program
 {
     private const string AppModeMessage = "Проект Benchmarks выполняется в режиме";
 
-    private static void Main()
+    public static void Main(string[] args)
     {
         PrintBuildConfiguration();
-        PrintSeparator();
-        RunBenchmarks();
+
+        Console.WriteLine(new string('-', 30));
+        if (args.Length > 0)
+        {
+            foreach (var benchmarkName in args)
+            {
+                Console.WriteLine($"Запуск бенчмарка: {benchmarkName}");
+                RunOneBenchmarks(benchmarkName);
+                PrintSeparator();
+            }
+        }
+        else
+        {
+            Console.WriteLine("Запуск всех бенчмарков.");
+            PrintSeparator();
+            RunAllBenchmarks();
+        }
     }
 
+    private static void PrintSeparator()
+    {
+        Console.WriteLine(new string('-', 30));
+    }
     private static void PrintBuildConfiguration()
     {
 #if DEBUG
@@ -20,16 +39,10 @@ internal static class Program
 #endif
     }
 
-    private static void PrintSeparator()
-    {
-        Console.WriteLine(new string('-', 30));
-        (double X, double Y)[] coords = new (double X, double Y)[1];
-    }
-
-    private static void RunBenchmarks()
+    private static void RunAllBenchmarks()
     {
         BenchmarkRunner.Run<AddVertexBenchmarks>();
-        BenchmarkRunner.Run<EdgeBenchmark>();
+        /*BenchmarkRunner.Run<EdgeBenchmark>();
 
         BenchmarkRunner.Run<AddVertexWithWeightBenchmarks>();
         BenchmarkRunner.Run<EdgeWithWeightBenchmark>();
@@ -37,7 +50,37 @@ internal static class Program
         BenchmarkRunner.Run<AddVertexWithListOfWeightBenchmarks>();
         BenchmarkRunner.Run<EdgeWithListOfWeightBenchmark>();
 
-        BenchmarkRunner.Run<PathGeneratorBenchmarks>();
+        BenchmarkRunner.Run<PathGeneratorBenchmarks>();*/
+    }
+    private static void RunOneBenchmarks(string benchmarkName)
+    {
+        switch (benchmarkName)
+        {
+            case "AddVertex":
+                BenchmarkRunner.Run<AddVertexBenchmarks>();
+                break;
+            case "Edge":
+                BenchmarkRunner.Run<EdgeBenchmark>();
+                break;
+            case "AddVertexWithWeight":
+                BenchmarkRunner.Run<AddVertexWithWeightBenchmarks>();
+                break;
+            case "EdgeWithWeight":
+                BenchmarkRunner.Run<EdgeWithWeightBenchmark>();
+                break;
+            case "AddVertexWithListOfWeight":
+                BenchmarkRunner.Run<AddVertexWithListOfWeightBenchmarks>();
+                break;
+            case "EdgeWithListOfWeight":
+                BenchmarkRunner.Run<EdgeWithListOfWeightBenchmark>();
+                break;
+            case "PathGenerator":
+                BenchmarkRunner.Run<PathGeneratorBenchmarks>();
+                break;
+            default:
+                Console.WriteLine($"Бенчмарк с именем '{benchmarkName}' не найден.");
+                break;
+        }
     }
 }
 

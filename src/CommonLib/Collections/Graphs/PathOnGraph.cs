@@ -19,11 +19,10 @@ public class PathOnGraph<T> where T : notnull
     /// </summary>
     public PathEdge<T> Last => _paths.Last();
 
-#if DEBUG
-
+    /// <summary>
+    /// Возвращает количество ребер в пути.
+    /// </summary>
     public int Count => _paths.Count;
-
-#endif
 
     /// <summary>
     /// Создает клон текущего пути, создавая новый экземпляр PathOnGraph<T> с копией всех ребер пути.
