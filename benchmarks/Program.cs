@@ -41,16 +41,9 @@ internal static class Program
 
     private static void RunAllBenchmarks()
     {
-        BenchmarkRunner.Run<AddVertexBenchmarks>();
-        /*BenchmarkRunner.Run<EdgeBenchmark>();
-
-        BenchmarkRunner.Run<AddVertexWithWeightBenchmarks>();
-        BenchmarkRunner.Run<EdgeWithWeightBenchmark>();
-
-        BenchmarkRunner.Run<AddVertexWithListOfWeightBenchmarks>();
-        BenchmarkRunner.Run<EdgeWithListOfWeightBenchmark>();
-
-        BenchmarkRunner.Run<PathGeneratorBenchmarks>();*/
+       BenchmarkSwitcher
+        .FromAssembly(typeof(Program).Assembly)
+        .Run(["--filter", "*"]);
     }
     private static void RunOneBenchmarks(string benchmarkName)
     {
