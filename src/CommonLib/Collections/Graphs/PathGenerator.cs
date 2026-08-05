@@ -1,15 +1,48 @@
 using System.Diagnostics;
 
+/// <summary>
+/// Представляет генератор оптимального пути в графе с весами.
+/// </summary>
+/// <typeparam name="T">Тип вершины</typeparam>
 public class PathGenerator<T> where T : notnull
 {
+    /// <summary>
+    /// Начальная вершина пути, с которой начинается генерация оптимального пути.
+    /// </summary>
     public T StartVertex { get; private set; }
+
+    /// <summary>
+    /// Конечная вершина пути, до которой генерируется оптимальный путь.
+    /// </summary>
     public T EndVertex { get; private set; }
+
+    /// <summary>
+    /// Граф, в котором осуществляется генерация оптимального пути.
+    /// </summary>
     public GraphWithListOfWeight<T> Graph { get; init; }
+
+    /// <summary>
+    /// Представляет текущий путь, который генерируется в процессе поиска оптимального пути.
+    /// </summary>
     private PathOnGraph<T> _paths = new PathOnGraph<T>();
 
+    /// <summary>
+    /// Представляет сгенерированный оптимальный путь между начальной и конечной вершинами.
+    /// Если путь не найден, значение будет null.
+    /// </summary>
     public PathOnGraph<T>? GeneratedPath { get; private set; }
+
+    /// <summary>
+    /// Представляет компаратор для сравнения вершин типа T, используемый при генерации пути.
+    /// Если компаратор не предоставлен, используется стандартный компаратор по умолчанию.
+    /// </summary>
     private IEqualityComparer<T> Comparer { get; }
 
+    /// <summary>
+    /// Инициализирует новый экземпляр класса PathGenerator с указанным графом и компаратором вершин.
+    /// </summary>
+    /// <param name="graph">Граф, в котором осуществляется генерация оптимального пути</param>
+    /// <param name="comparer">Компаратор для сравнения вершин типа T</param>
     public PathGenerator(GraphWithListOfWeight<T> graph, IEqualityComparer<T>? comparer = null)
     {
         ArgumentNullException.ThrowIfNull(graph);
@@ -68,7 +101,14 @@ public class PathGenerator<T> where T : notnull
                 throw new ArgumentException($"Вершина не содержет ребер {vertex}");
         }
     }
-
+    /// <summary>
+    /// Рекурсивно генерирует оптимальный путь от текущей вершины к конечной вершине, обходя все смежные вершины.
+    /// Если найден путь к конечной вершине, обновляет GeneratedPath, если найденный путь имеет меньший вес, чем уже существующий путь.
+    /// </summary>
+    /// <param name="vertex">Текущая вершина</param>
+    /// <param name="prefVertex">Предыдущая вершина. 
+    /// Если граф не ориентированный, используется для
+    /// предотвращения возврата к предыдущей вершине</param>
     private void GenerateOptimalPath(T vertex, T? prefVertex = default)
     {
         foreach (var edge in Graph.GetAdjacentVertices(vertex))
@@ -85,14 +125,14 @@ public class PathGenerator<T> where T : notnull
 
                     GeneratedPath = _paths.Clone();
 
-                GeneratedPath.Add(edge);
+                GeneratedPath.AddPathEdge(edge);
 
                 Debug.WriteLine($"Найден путь с количеством вершин: {GeneratedPath.Count},  с весом: {GeneratedPath.Last.PathWeight}");
 
                 continue;
             }
 
-            _paths.Add(edge);
+            _paths.AddPathEdge(edge);
 
             GenerateOptimalPath(edge.Target, vertex);
         }

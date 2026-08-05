@@ -26,8 +26,8 @@ public class PathOnGraphTests
         path.AddStartPathEdge(1);
 
         // Action
-        path.Add(new Edge<int>(2, 5.5));
-        path.Add(new Edge<int>(3, 2.5));
+        path.AddPathEdge(new Edge<int>(2, 5.5));
+        path.AddPathEdge(new Edge<int>(3, 2.5));
 
         // Assert
         Assert.AreEqual(3, path.Count);
@@ -42,11 +42,11 @@ public class PathOnGraphTests
         // Arrange
         var path = new PathOnGraph<int>();
         path.AddStartPathEdge(1);
-        path.Add(new Edge<int>(2, 3.0));
+        path.AddPathEdge(new Edge<int>(2, 3.0));
 
         // Action
         var clone = path.Clone();
-        clone.Add(new Edge<int>(3, 4.0));
+        clone.AddPathEdge(new Edge<int>(3, 4.0));
 
         // Assert
         Assert.AreEqual(2, path.Count);
@@ -62,8 +62,8 @@ public class PathOnGraphTests
         // Arrange
         var path = new PathOnGraph<int>();
         path.AddStartPathEdge(1);
-        path.Add(new Edge<int>(2, 2.0));
-        path.Add(new Edge<int>(3, 4.0));
+        path.AddPathEdge(new Edge<int>(2, 2.0));
+        path.AddPathEdge(new Edge<int>(3, 4.0));
 
         // Action
         var found = path.TryGetPathEdge(2, out var pathEdge);
@@ -81,8 +81,8 @@ public class PathOnGraphTests
         // Arrange
         var path = new PathOnGraph<string>();
         path.AddStartPathEdge("A");
-        path.Add(new Edge<string>("B", 1.5));
-        path.Add(new Edge<string>("C", 2.5));
+        path.AddPathEdge(new Edge<string>("B", 1.5));
+        path.AddPathEdge(new Edge<string>("C", 2.5));
 
         // Action
         var found = path.TryGetPathEdge("B", out var pathEdge);
@@ -100,7 +100,7 @@ public class PathOnGraphTests
         // Arrange
         var path = new PathOnGraph<string>();
         path.AddStartPathEdge("A");
-        path.Add(new Edge<string>("B", 1.5));
+        path.AddPathEdge(new Edge<string>("B", 1.5));
 
         // Action
         var found = path.TryGetPathEdge("C", out var pathEdge);
