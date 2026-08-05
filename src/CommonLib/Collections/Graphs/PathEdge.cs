@@ -6,10 +6,7 @@ public struct PathEdge<T>
     {
         ArgumentNullException.ThrowIfNull(target);
 
-        if (double.IsNaN(pathWeight))
-            throw new ArgumentOutOfRangeException(nameof(pathWeight));
-
-        if (double.IsNegativeInfinity(pathWeight))
+        if (double.IsNaN(pathWeight) || double.IsInfinity(pathWeight))
             throw new ArgumentOutOfRangeException(nameof(pathWeight));
 
         Target = target;

@@ -15,6 +15,7 @@ public class PathOnGraph<T> where T : notnull
 
     public PathEdge<T> Last => _paths.Last();
 
+    public int Count => _paths.Count;
 
     public PathOnGraph<T> Clone() => new PathOnGraph<T>
     {
@@ -38,8 +39,6 @@ public class PathOnGraph<T> where T : notnull
         pathEdge = default;
         return false;
     }
-
-    public int Count => _paths.Count;
 
     /// <summary>
     ///Добавляет начальное ребро в путь, так как путь начинается с этой вершины сбрасываем вес на 0.

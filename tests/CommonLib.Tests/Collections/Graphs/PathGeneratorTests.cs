@@ -1,7 +1,7 @@
 [TestClass]
 public class PathGeneratorTests
 {
-    [DynamicData(nameof(LoadEdges))]
+    [DynamicData(nameof(CreateSmallGraphWithSpecialRoutes))]
     [TestMethod]
     public void GeneratePathShouldPathWithValidWeight(GraphWithListOfWeight<int> graph)
     {
@@ -15,7 +15,7 @@ public class PathGeneratorTests
         Assert.AreEqual(23, pathGenerator.GeneratedPath?.Last.PathWeight);
     }
 
-    [DynamicData(nameof(LoadEdges))]
+    [DynamicData(nameof(CreateSmallGraphWithSpecialRoutes))]
     [TestMethod]
     public void GeneratePathShouldEndVertexesValid(GraphWithListOfWeight<int> graph)
     {
@@ -29,8 +29,7 @@ public class PathGeneratorTests
         Assert.AreEqual(10, pathGenerator.GeneratedPath?.Last.Target);
     }
 
-
-    private static GraphWithListOfWeight<int>[] LoadEdges()
+    private static GraphWithListOfWeight<int>[] CreateSmallGraphWithSpecialRoutes()
     {
         var graphWithListOfWeight = new GraphWithListOfWeight<int>();
         graphWithListOfWeight.TryAddEdge(src: 1, dest: 2, weight: 7); // 1 -> 2 (weight: 0 + 7 = 7)
@@ -47,7 +46,6 @@ public class PathGeneratorTests
         graphWithListOfWeight.TryAddEdge(src: 6, dest: 8, weight: 2); // 6 -> 8 (weight: 20 + 2 = 22)
         graphWithListOfWeight.TryAddEdge(src: 8, dest: 7, weight: 3); // 8 -> 7 (weight: 22 + 3 = 25)
         return [graphWithListOfWeight];
-
     }
 
     [TestMethod]
@@ -127,6 +125,76 @@ public class PathGeneratorTests
             if (i % 50 == 0 && i + 25 <= 1_000_000)
                 graph.TryAddEdge(i, i + 25, 2000.0);
         }
+
+        return graph;
+    }
+
+    [TestMethod]
+    public void GeneratePath_ShouldReturnNullWhenNoRouteExistsOnSmallGraph()
+    {
+        // Arrange
+        var graph = CreateSmallGraphWithoutRoute();
+        var pathGenerator = new PathGenerator<int>(graph);
+
+        // Action
+        pathGenerator.GeneratePaths(startVertex: 1, endVertex: 10);
+
+        // Assert
+        Assert.IsNull(pathGenerator.GeneratedPath);
+    }
+
+    [TestMethod]
+    public void GeneratePath_ShouldReturnNullWhenNoRouteExistsOnLargeGraph()
+    {
+        // Arrange
+        var graph = CreateLargeGraphWithoutRoute();
+        var pathGenerator = new PathGenerator<int>(graph);
+
+        // Action
+        pathGenerator.GeneratePaths(startVertex: 256, endVertex: 56000);
+
+        // Assert
+        Assert.IsNull(pathGenerator.GeneratedPath);
+    }
+
+    private static GraphWithListOfWeight<int> CreateSmallGraphWithoutRoute()
+    {
+        var graph = new GraphWithListOfWeight<int>(directed: true);
+        graph.TryAddVertex(1);
+        graph.TryAddVertex(10);
+
+        // Вершина 1 имеет исходящие ребра, но путь к 10 отсутствует.
+        graph.TryAddEdge(1, 2, 1.0);
+        graph.TryAddEdge(1, 3, 1.0);
+        graph.TryAddEdge(2, 4, 1.0);
+        graph.TryAddEdge(3, 5, 1.0);
+
+        // Вершина 10 имеет собственные исходящие ребра, но не связана с компонентой 1.
+        graph.TryAddEdge(10, 11, 1.0);
+        graph.TryAddEdge(10, 12, 1.0);
+
+        return graph;
+    }
+
+    private static GraphWithListOfWeight<int> CreateLargeGraphWithoutRoute()
+    {
+        var graph = new GraphWithListOfWeight<int>(directed: true);
+
+        for (int i = 1; i <= 1_000_000; i++)
+        {
+            graph.TryAddVertex(i);
+        }
+
+        // Компонента, содержащая стартовую вершину 256.
+        graph.TryAddEdge(256, 257, 1.0);
+        graph.TryAddEdge(257, 258, 1.0);
+        graph.TryAddEdge(258, 259, 1.0);
+        graph.TryAddEdge(259, 260, 1.0);
+
+        // Компонента, содержащая конечную вершину 56000.
+        graph.TryAddEdge(56000, 56001, 1.0);
+        graph.TryAddEdge(56000, 56002, 1.0);
+        graph.TryAddEdge(56001, 56003, 1.0);
 
         return graph;
     }

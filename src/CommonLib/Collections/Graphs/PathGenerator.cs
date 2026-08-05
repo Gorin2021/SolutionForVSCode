@@ -24,6 +24,14 @@ public class PathGenerator<T> where T : notnull
         EndVertex = default!;
     }
 
+    /// <summary>
+    /// Генерирует оптимальный путь между двумя вершинами в графе.
+    /// </summary>
+    /// <param name="startVertex">Начальная вершина</param>
+    /// <param name="endVertex">Конечная вершина</param>
+    /// <exception cref="ArgumentNullException">Выбрасывается если startVertex или endVertex равно null</exception>
+    /// <exception cref="ArgumentException">Выбрасывается если startVertex или endVertex:
+    ///  не существует в графе или не содержит ребер (только при не ориентированом графе).</exception> 
     public void GeneratePaths(T startVertex, T endVertex)
     {
         ValidateStartAndEndVertexes(startVertex);
@@ -45,7 +53,7 @@ public class PathGenerator<T> where T : notnull
     /// </summary>
     /// <param name="vertex">Проверяемая вершина</param>
     /// <exception cref="ArgumentNullException">Выбрасывается если vertex равно null
-    /// <exception cref="ArgumentException">Выбрасывается если vertex:
+    /// <exception cref="ArgumentException">Выбрасывается если vertex
     ///  не существует в графе или не содержит ребер (только при не ориентированом графе).</exception>
     private void ValidateStartAndEndVertexes(T vertex)
     {
@@ -57,7 +65,7 @@ public class PathGenerator<T> where T : notnull
         if (!Graph.IsDirected)
         {
             if (!Graph.GetAdjacentVertices(vertex).Any())
-                throw new ArgumentException($"Начальная вершина не содержет ребер {vertex}");
+                throw new ArgumentException($"Вершина не содержет ребер {vertex}");
         }
     }
 

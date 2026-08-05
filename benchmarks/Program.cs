@@ -37,7 +37,7 @@ internal static class Program
         BenchmarkRunner.Run<AddVertexWithListOfWeightBenchmarks>();
         BenchmarkRunner.Run<EdgeWithListOfWeightBenchmark>();
 
-
+        BenchmarkRunner.Run<PathGeneratorBenchmarks>();
     }
 }
 
